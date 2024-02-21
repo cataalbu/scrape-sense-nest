@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -20,7 +20,11 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
-  createOne(userData: CreateUserDto) {
+  async createOne(userData: CreateUserDto) {
+    const findUser = await this.findOneByEmail(userData.email);
+    if (findUser) {
+      throw new BadRequestException('Email already in use');
+    }
     const password = hashPassword(userData.password);
     const user = new this.userModel({ ...userData, password });
     return user.save();
