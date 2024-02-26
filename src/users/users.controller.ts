@@ -6,7 +6,6 @@ import {
   NotFoundException,
   Param,
   Patch,
-  UseGuards,
 } from '@nestjs/common';
 import mongoose from 'mongoose';
 
@@ -23,7 +22,6 @@ import { Role } from 'src/enums/roles.enum';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Roles(Role.ADMIN, Role.USER)
   @Get(':id')
   async getUser(@Param('id') id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {

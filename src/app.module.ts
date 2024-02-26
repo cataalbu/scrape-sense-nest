@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ApiKeysModule } from './api-keys/api-keys.module';
+import { ApiKeyStrategy } from './auth/strategies/api-key.strategy';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     }),
     UsersModule,
     AuthModule,
+    ApiKeysModule,
   ],
   controllers: [AppController],
   providers: [
