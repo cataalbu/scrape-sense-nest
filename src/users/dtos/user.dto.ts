@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 
 export class UserDto {
-  @Expose({ name: '_id' })
+  @Expose()
   id: string;
 
   @Expose()
