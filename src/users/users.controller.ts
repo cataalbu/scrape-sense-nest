@@ -15,14 +15,15 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { Roles } from 'src/decorators/roles.decorators';
+import { Role } from 'src/enums/roles.enum';
 
 @Controller('users')
 @Serialize(UserDto)
-@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @Roles(Role.ADMIN, Role.USER)
   @Get(':id')
   async getUser(@Param('id') id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -56,6 +57,20 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException();
     }
+    return user;
+  }
+
+  @Roles(Role.ADMIN)
+  @Patch('admin/make-admin/:id')
+  async makeUserAdmin(@Param('id') id: string) {
+    const user = await this.usersService.makeUserAdmin(id);
+    return user;
+  }
+
+  @Roles(Role.ADMIN)
+  @Patch('admin/make-user/:id')
+  async makeGuestUser(@Param('id') id: string) {
+    const user = await this.usersService.makeGuestUser(id);
     return user;
   }
 }

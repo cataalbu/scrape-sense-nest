@@ -7,6 +7,8 @@ import { hashPassword } from 'src/utils/bcrypt.utils';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { Role } from 'src/enums/roles.enum';
+import { UpdateFullUserDto } from './dtos/update-full-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -20,13 +22,13 @@ export class UsersService {
     return this.userModel.findOne({ email });
   }
 
-  async createOne(userData: CreateUserDto) {
+  async createOne(userData: CreateUserDto, roles: Role[] = [Role.GUEST]) {
     const findUser = await this.findOneByEmail(userData.email);
     if (findUser) {
       throw new BadRequestException('Email already in use');
     }
     const password = hashPassword(userData.password);
-    const user = new this.userModel({ ...userData, password });
+    const user = new this.userModel({ ...userData, password, roles });
     return user.save();
   }
 
@@ -34,7 +36,23 @@ export class UsersService {
     return this.userModel.findByIdAndDelete(id);
   }
 
-  updateOne({ id, ...userData }: UpdateUserDto) {
+  updateOne({ id, ...userData }: UpdateFullUserDto) {
     return this.userModel.findByIdAndUpdate(id, { ...userData }, { new: true });
+  }
+
+  makeUserAdmin(id: string) {
+    return this.userModel.findByIdAndUpdate(
+      id,
+      { roles: [Role.ADMIN, Role.USER, Role.GUEST] },
+      { new: true },
+    );
+  }
+
+  makeGuestUser(id: string) {
+    return this.userModel.findByIdAndUpdate(
+      id,
+      { roles: [Role.USER, Role.GUEST] },
+      { new: true },
+    );
   }
 }

@@ -4,6 +4,7 @@ import { AuthDto } from './dtos/auth.dto';
 import { comparePasswords } from 'src/utils/bcrypt.utils';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from 'src/enums/roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,10 @@ export class AuthService {
   }
 
   signupUser(userData: CreateUserDto) {
+    return this.userService.createOne(userData, [Role.USER, Role.GUEST]);
+  }
+
+  signupGuest(userData: CreateUserDto) {
     return this.userService.createOne(userData);
   }
 }
