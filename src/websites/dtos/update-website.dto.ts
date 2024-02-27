@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { WebsiteType } from 'src/enums/website-types.enum';
 
 export class UpdateWebsiteDto {
@@ -7,14 +13,14 @@ export class UpdateWebsiteDto {
   id: string;
 
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  @IsOptional()
+  name?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  url: string;
+  @IsUrl({ require_tld: false })
+  @IsOptional()
+  url?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(WebsiteType)
-  type: WebsiteType;
+  type?: WebsiteType;
 }

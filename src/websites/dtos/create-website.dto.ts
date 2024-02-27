@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { WebsiteType } from 'src/enums/website-types.enum';
 
 export class CreateWebsiteDto {
@@ -6,7 +6,7 @@ export class CreateWebsiteDto {
   @IsNotEmpty()
   name: string;
 
-  @IsString()
+  @IsUrl({ require_tld: false })
   @IsNotEmpty()
   url: string;
 

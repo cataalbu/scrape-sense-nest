@@ -10,8 +10,11 @@ import {
 import { CreateWebsiteDto } from './dtos/create-website.dto';
 import { WebsitesService } from './websites.service';
 import { UpdateWebsiteDto } from './dtos/update-website.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { WebsiteDto } from './dtos/website.dto';
 
 @Controller('websites')
+@Serialize(WebsiteDto)
 export class WebsitesController {
   constructor(private websitesService: WebsitesService) {}
 
