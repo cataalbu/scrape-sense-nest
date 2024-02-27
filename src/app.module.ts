@@ -11,6 +11,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiKeysModule } from './api-keys/api-keys.module';
 import { ApiKeyStrategy } from './auth/strategies/api-key.strategy';
 import { WebsitesModule } from './websites/websites.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { WebsitesModule } from './websites/websites.module';
     AuthModule,
     ApiKeysModule,
     WebsitesModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [
