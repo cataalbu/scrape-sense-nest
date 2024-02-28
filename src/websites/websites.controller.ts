@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -34,12 +35,20 @@ export class WebsitesController {
   }
 
   @Patch()
-  updateWebsite(@Body() websiteData: UpdateWebsiteDto) {
-    return this.websitesService.updateOne(websiteData);
+  async updateWebsite(@Body() websiteData: UpdateWebsiteDto) {
+    const website = await this.websitesService.updateOne(websiteData);
+    if (!website) {
+      throw new NotFoundException();
+    }
+    return website;
   }
 
   @Delete('/:id')
-  deleteWebsite(@Param('id') id: string) {
-    return this.websitesService.deleteOne(id);
+  async deleteWebsite(@Param('id') id: string) {
+    const website = await this.websitesService.deleteOne(id);
+    if (!website) {
+      throw new NotFoundException();
+    }
+    return website;
   }
 }

@@ -40,6 +40,13 @@ export class ProductsService {
     );
   }
 
+  updateProductsInfo(productsInfo: UpdateProductInfoDto[]) {
+    const promises = productsInfo.map((productInfo) =>
+      this.updateProductInfo(productInfo),
+    );
+    return Promise.all(promises);
+  }
+
   updateOne({ id, ...productData }: UpdateProductDto) {
     return this.productModel.findByIdAndUpdate(id, productData, { new: true });
   }

@@ -22,10 +22,6 @@ class Price {
 
 export class UpdateProductInfoDto {
   @IsString()
-  @IsNotEmpty()
-  id: string;
-
-  @IsString()
   name?: string;
 
   @IsString()
