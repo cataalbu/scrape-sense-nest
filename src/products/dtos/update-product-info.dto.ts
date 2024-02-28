@@ -20,29 +20,30 @@ class Price {
   price: number;
 }
 
-export class CreateProductDto {
+export class UpdateProductInfoDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  id: string;
 
   @IsString()
-  @IsNotEmpty()
-  imageUrl: string;
+  name?: string;
 
-  @ValidateNested({ each: true })
+  @IsString()
+  imageUrl?: string;
+
+  @ValidateNested()
   @Type(() => Price)
-  prices: Price[];
+  price: Price;
 
   @IsInt()
   @Min(0)
   @Max(5)
-  rating: number;
+  rating?: number;
 
   @IsString()
   @IsNotEmpty()
   websiteId: string;
 
   @IsString()
-  @IsNotEmpty()
-  website: string;
+  website?: string;
 }

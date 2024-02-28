@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Price } from 'src/types/price';
+import { Website } from './website.schema';
+import mongoose from 'mongoose';
 
 @Schema()
 export class Product {
@@ -14,6 +16,16 @@ export class Product {
 
   @Prop({ required: true })
   rating: number;
+
+  @Prop({ required: true })
+  websiteId: string;
+
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Website',
+  })
+  website: Website;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

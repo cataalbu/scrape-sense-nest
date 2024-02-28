@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Website } from 'src/schemas/website.schema';
 import { CreateWebsiteDto } from './dtos/create-website.dto';
 import { UpdateWebsiteDto } from './dtos/update-website.dto';
@@ -16,7 +16,7 @@ export class WebsitesService {
   }
 
   async findOneById(id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();
     }
     const website = await this.websiteModel.findById(id);

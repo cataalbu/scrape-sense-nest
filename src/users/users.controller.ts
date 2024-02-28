@@ -7,7 +7,7 @@ import {
   Param,
   Patch,
 } from '@nestjs/common';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 
@@ -24,7 +24,7 @@ export class UsersController {
 
   @Get(':id')
   async getUser(@Param('id') id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();
     }
     const user = await this.usersService.findOneById(id);
@@ -36,7 +36,7 @@ export class UsersController {
 
   @Patch()
   async updateUser(@Body() userData: UpdateUserDto) {
-    if (!mongoose.Types.ObjectId.isValid(userData.id)) {
+    if (!Types.ObjectId.isValid(userData.id)) {
       throw new NotFoundException();
     }
     const user = await this.usersService.updateOne(userData);
@@ -48,7 +48,7 @@ export class UsersController {
 
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();
     }
     const user = await this.usersService.deleteOne(id);
