@@ -40,10 +40,15 @@ export class ProductsService {
     );
   }
 
-  updateProductsInfo(productsInfo: UpdateProductInfoDto[]) {
-    const promises = productsInfo.map((productInfo) =>
-      this.updateProductInfo(productInfo),
-    );
+  updateProductsWithScrapedProducts(productsInfo: UpdateProductInfoDto[]) {
+    const promises = productsInfo.map(async (productInfo) => {
+      const product = await this.updateProductInfo(productInfo);
+      if (!product) {
+        const { price, ...prod } = productInfo;
+        return this.createOne({ ...prod, prices: [price] });
+      }
+      return product;
+    });
     return Promise.all(promises);
   }
 

@@ -22,10 +22,12 @@ class Price {
 
 export class UpdateProductInfoDto {
   @IsString()
-  name?: string;
+  @IsNotEmpty()
+  name: string;
 
   @IsString()
-  imageUrl?: string;
+  @IsNotEmpty()
+  imageUrl: string;
 
   @ValidateNested()
   @Type(() => Price)
@@ -34,12 +36,12 @@ export class UpdateProductInfoDto {
   @IsInt()
   @Min(0)
   @Max(5)
-  rating?: number;
+  rating: number;
 
   @IsString()
   @IsNotEmpty()
   websiteId: string;
 
   @IsString()
-  website?: string;
+  website: string;
 }
