@@ -9,10 +9,10 @@ import { AppController } from './app.controller';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiKeysModule } from './api-keys/api-keys.module';
-import { ApiKeyStrategy } from './auth/strategies/api-key.strategy';
 import { WebsitesModule } from './websites/websites.module';
 import { ProductsModule } from './products/products.module';
 import { ScrapedProductsModule } from './scraped-products/scraped-products.module';
+import { ScrapeTasksModule } from './scrape-tasks/scrape-tasks.module';
 
 @Module({
   imports: [
@@ -27,28 +27,14 @@ import { ScrapedProductsModule } from './scraped-products/scraped-products.modul
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      connectionName: 'scrapyConnection',
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('SCRAPY_MONGODB_URI'),
-      }),
-      inject: [ConfigService],
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      connectionName: 'puppeteerConnection',
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('PUPPETEER_MONGODB_URI'),
-      }),
-      inject: [ConfigService],
-    }),
+
     UsersModule,
     AuthModule,
     ApiKeysModule,
     WebsitesModule,
     ProductsModule,
     ScrapedProductsModule,
+    ScrapeTasksModule,
   ],
   controllers: [AppController],
   providers: [
