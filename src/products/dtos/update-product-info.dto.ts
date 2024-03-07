@@ -29,6 +29,7 @@ export class UpdateProductInfoDto {
   @IsNotEmpty()
   imageUrl: string;
 
+  @IsNotEmpty()
   @ValidateNested()
   @Type(() => Price)
   price: Price;

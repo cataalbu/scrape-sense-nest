@@ -13,4 +13,13 @@ export class ScrapeTaskDto {
 
   @Expose()
   status: ScrapeTaskStatus;
+
+  @Expose()
+  startTime: Date;
+
+  @Expose()
+  endTime: Date;
+
+  @Expose()
+  scrapeCount: number;
 }

@@ -31,10 +31,11 @@ export class ProductsService {
   updateProductInfo({
     websiteId,
     price,
+    website,
     ...productInfo
   }: UpdateProductInfoDto) {
     return this.productModel.findOneAndUpdate(
-      { websiteId },
+      { websiteId, website },
       { $set: productInfo, $push: { prices: price } },
       { new: true },
     );

@@ -4,60 +4,34 @@ import {
   Controller,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ScrapeTasksService } from './scrape-tasks.service';
 import { CreateScrapeTaskDto } from './dtos/create-scrape-task.dto';
-import { ScrapeTaskType } from 'src/enums/scrape-task-types.enum';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ScrapeTaskDto } from './dtos/scrape-task.dto';
-import { WebsitesService } from 'src/websites/websites.service';
-import { WebsiteType } from 'src/enums/website-types.enum';
 import { UpdateScrapeTaskResultsDto } from './dtos/update-scrape-task-results.dto';
+import { SkipAuth } from 'src/decorators/skip-auth.decorator';
+import { ApiKeyAuthGuard } from 'src/guards/api-key-auth.guard';
 
 @Serialize(ScrapeTaskDto)
 @Controller('scrape-tasks')
 export class ScrapeTasksController {
-  constructor(
-    private scrapeTasksService: ScrapeTasksService,
-    private websitesService: WebsitesService,
-  ) {}
+  constructor(private scrapeTasksService: ScrapeTasksService) {}
 
   @Post()
   async createScrapeTask(@Body() scrapeTaskData: CreateScrapeTaskDto) {
     const scrapeTask = await this.scrapeTasksService.create(scrapeTaskData);
-    const website = await this.websitesService.findOneById(
-      scrapeTaskData.website,
-    );
-
-    // TODO: Invoke scraper
-    switch (scrapeTask.type) {
-      case ScrapeTaskType.PUPPETEER:
-        // TODO: Invoke puppeteer
-        if (website.type === WebsiteType.CSR) {
-          // csr endpoint
-        } else {
-          // ssr endpoint
-        }
-        break;
-
-      case ScrapeTaskType.SCRAPY:
-        // TODO: Invoke scraper
-        if (website.type === WebsiteType.CSR) {
-          // csr endpoint
-        } else {
-          // ssr endpoint
-        }
-        break;
-
-      default:
-        throw new BadRequestException();
-    }
-
-    return scrapeTask;
+    const task = await this.scrapeTasksService.runTask(scrapeTask);
+    return task;
   }
 
-  @Patch()
+  @Patch('/results')
+  @SkipAuth()
+  @UseGuards(ApiKeyAuthGuard)
   updateScrapedTaskResults(
     @Body() scrapedTaskData: UpdateScrapeTaskResultsDto,
-  ) {}
+  ) {
+    return this.scrapeTasksService.updateScrapeTaskResults(scrapedTaskData);
+  }
 }
