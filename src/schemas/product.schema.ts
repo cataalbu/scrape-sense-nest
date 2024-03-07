@@ -3,7 +3,9 @@ import { Price } from 'src/types/price';
 import { Website } from './website.schema';
 import mongoose from 'mongoose';
 
-@Schema()
+@Schema({
+  versionKey: false,
+})
 export class Product {
   @Prop({ required: true })
   name: string;

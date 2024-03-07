@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScrapeTask, ScrapeTaskSchema } from 'src/schemas/scrape-task.schema';
 import { ProductsModule } from 'src/products/products.module';
 import { ScrapedProductsModule } from 'src/scraped-products/scraped-products.module';
+import { WebsitesModule } from 'src/websites/websites.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScrapedProductsModule } from 'src/scraped-products/scraped-products.mod
     ]),
     ProductsModule,
     ScrapedProductsModule,
+    WebsitesModule,
   ],
   controllers: [ScrapeTasksController],
   providers: [ScrapeTasksService],

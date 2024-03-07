@@ -1,6 +1,10 @@
-import { IsDate, IsNumber } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class UpdateScrapTaskDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
   @IsDate()
   startTime: Date;
 

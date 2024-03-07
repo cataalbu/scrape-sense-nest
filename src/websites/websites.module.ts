@@ -15,5 +15,6 @@ import { Website, WebsiteSchema } from 'src/schemas/website.schema';
   ],
   controllers: [WebsitesController],
   providers: [WebsitesService],
+  exports: [WebsitesService],
 })
 export class WebsitesModule {}

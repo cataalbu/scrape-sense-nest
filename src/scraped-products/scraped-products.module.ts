@@ -7,16 +7,6 @@ import {
 } from 'src/schemas/scraped-product.schema';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature(
-      [{ name: ScrapedProduct.name, schema: ScrapedProductSchema }],
-      'scrapyConnection',
-    ),
-    MongooseModule.forFeature(
-      [{ name: ScrapedProduct.name, schema: ScrapedProductSchema }],
-      'puppeteerConnection',
-    ),
-  ],
   providers: [ScrapedProductsService],
   exports: [ScrapedProductsService],
 })

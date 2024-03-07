@@ -43,5 +43,6 @@ export class UpdateProductInfoDto {
   websiteId: string;
 
   @IsString()
+  @IsNotEmpty()
   website: string;
 }
