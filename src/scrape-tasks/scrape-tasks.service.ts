@@ -68,7 +68,6 @@ export class ScrapeTasksService {
       scrapeTaskData.website.toString(),
     );
 
-    // TODO: Invoke scraper
     switch (scrapeTaskData.type) {
       case ScrapeTaskType.PUPPETEER:
         const puppeteerApiBaseUrl = this.configService.get('PUPPETEER_API_URL');
@@ -77,19 +76,20 @@ export class ScrapeTasksService {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'x-api-key': this.configService.get('PUPPETEER_API_KEY'),
             },
             body: JSON.stringify({
               id: scrapeTaskData.id,
               website: scrapeTaskData.website.toString(),
             }),
           });
-          console.log(scrapeResponse.status);
+
           if (scrapeResponse.ok) {
             return scrapeTaskData;
           } else {
             return this.update({
               id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CANCELED,
+              status: ScrapeTaskStatus.CRASHED,
             });
           }
         } else {
@@ -97,6 +97,7 @@ export class ScrapeTasksService {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'x-api-key': this.configService.get('PUPPETEER_API_KEY'),
             },
             body: JSON.stringify({
               id: scrapeTaskData.id,
@@ -108,32 +109,33 @@ export class ScrapeTasksService {
           } else {
             return this.update({
               id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CANCELED,
+              status: ScrapeTaskStatus.CRASHED,
             });
           }
         }
 
       case ScrapeTaskType.SCRAPY:
         const scrapyApiBaseUrl = this.configService.get('SCRAPY_API_URL');
-        console.log(scrapyApiBaseUrl);
+
         if (website.type === WebsiteType.CSR) {
           const scrapeResponse = await fetch(`${scrapyApiBaseUrl}/csr`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'x-api-key': this.configService.get('SCRAPY_API_KEY'),
             },
             body: JSON.stringify({
               id: scrapeTaskData.id,
               website: scrapeTaskData.website.toString(),
             }),
           });
-          console.log(scrapeResponse.status);
+
           if (scrapeResponse.ok) {
             return scrapeTaskData;
           } else {
             return this.update({
               id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CANCELED,
+              status: ScrapeTaskStatus.CRASHED,
             });
           }
         } else {
@@ -141,19 +143,19 @@ export class ScrapeTasksService {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'x-api-key': this.configService.get('SCRAPY_API_KEY'),
             },
             body: JSON.stringify({
               id: scrapeTaskData.id,
               website: scrapeTaskData.website.toString(),
             }),
           });
-          console.log(scrapeResponse.status);
           if (scrapeResponse.ok) {
             return scrapeTaskData;
           } else {
             return this.update({
               id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CANCELED,
+              status: ScrapeTaskStatus.CRASHED,
             });
           }
         }
@@ -170,7 +172,10 @@ export class ScrapeTasksService {
     await this.productsService.updateProductsWithScrapedProducts(
       scrapedProducts,
     );
-    const task = await this.update(scrapedTaskData);
+    const task = await this.update({
+      ...scrapedTaskData,
+      status: ScrapeTaskStatus.FINISHED,
+    });
     return task;
   }
 }

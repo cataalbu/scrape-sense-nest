@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Param,
   Patch,
   Post,
   UseGuards,
@@ -13,6 +14,7 @@ import { ScrapeTaskDto } from './dtos/scrape-task.dto';
 import { UpdateScrapeTaskResultsDto } from './dtos/update-scrape-task-results.dto';
 import { SkipAuth } from 'src/decorators/skip-auth.decorator';
 import { ApiKeyAuthGuard } from 'src/guards/api-key-auth.guard';
+import { ScrapeTaskStatus } from 'src/enums/scrape-task-status.enum';
 
 @Serialize(ScrapeTaskDto)
 @Controller('scrape-tasks')
@@ -29,9 +31,17 @@ export class ScrapeTasksController {
   @Patch('/results')
   @SkipAuth()
   @UseGuards(ApiKeyAuthGuard)
-  updateScrapedTaskResults(
-    @Body() scrapedTaskData: UpdateScrapeTaskResultsDto,
-  ) {
+  updateScrapeTaskResults(@Body() scrapedTaskData: UpdateScrapeTaskResultsDto) {
     return this.scrapeTasksService.updateScrapeTaskResults(scrapedTaskData);
+  }
+
+  @Patch('/crash/:id')
+  @SkipAuth()
+  @UseGuards(ApiKeyAuthGuard)
+  crashScrapeTask(@Param('id') id: string) {
+    return this.scrapeTasksService.update({
+      id,
+      status: ScrapeTaskStatus.CRASHED,
+    });
   }
 }

@@ -4,7 +4,6 @@ import { ScrapeTasksService } from './scrape-tasks.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScrapeTask, ScrapeTaskSchema } from 'src/schemas/scrape-task.schema';
 import { ProductsModule } from 'src/products/products.module';
-import { ScrapedProductsModule } from 'src/scraped-products/scraped-products.module';
 import { WebsitesModule } from 'src/websites/websites.module';
 import * as express from 'express';
 @Module({
@@ -16,7 +15,6 @@ import * as express from 'express';
       },
     ]),
     ProductsModule,
-    ScrapedProductsModule,
     WebsitesModule,
   ],
   controllers: [ScrapeTasksController],

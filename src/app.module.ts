@@ -11,7 +11,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiKeysModule } from './api-keys/api-keys.module';
 import { WebsitesModule } from './websites/websites.module';
 import { ProductsModule } from './products/products.module';
-import { ScrapedProductsModule } from './scraped-products/scraped-products.module';
 import { ScrapeTasksModule } from './scrape-tasks/scrape-tasks.module';
 
 @Module({
@@ -33,7 +32,6 @@ import { ScrapeTasksModule } from './scrape-tasks/scrape-tasks.module';
     ApiKeysModule,
     WebsitesModule,
     ProductsModule,
-    ScrapedProductsModule,
     ScrapeTasksModule,
   ],
   controllers: [AppController],
