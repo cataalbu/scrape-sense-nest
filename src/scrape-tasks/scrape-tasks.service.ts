@@ -71,9 +71,9 @@ export class ScrapeTasksService {
     // TODO: Invoke scraper
     switch (scrapeTaskData.type) {
       case ScrapeTaskType.PUPPETEER:
-        const baseUrl = this.configService.get('PUPPETEER_API_URL');
+        const puppeteerApiBaseUrl = this.configService.get('PUPPETEER_API_URL');
         if (website.type === WebsiteType.CSR) {
-          const scrapeResponse = await fetch(`${baseUrl}/csr`, {
+          const scrapeResponse = await fetch(`${puppeteerApiBaseUrl}/csr`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -93,8 +93,7 @@ export class ScrapeTasksService {
             });
           }
         } else {
-          // ssr endpoint
-          const scrapeResponse = await fetch(`${baseUrl}/ssr`, {
+          const scrapeResponse = await fetch(`${puppeteerApiBaseUrl}/ssr`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -115,15 +114,49 @@ export class ScrapeTasksService {
         }
 
       case ScrapeTaskType.SCRAPY:
-        // TODO: Invoke scraper
+        const scrapyApiBaseUrl = this.configService.get('SCRAPY_API_URL');
+        console.log(scrapyApiBaseUrl);
         if (website.type === WebsiteType.CSR) {
-          // csr endpoint
-          console.log('Invoke CSR scrapy enpoint');
+          const scrapeResponse = await fetch(`${scrapyApiBaseUrl}/csr`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: scrapeTaskData.id,
+              website: scrapeTaskData.website.toString(),
+            }),
+          });
+          console.log(scrapeResponse.status);
+          if (scrapeResponse.ok) {
+            return scrapeTaskData;
+          } else {
+            return this.update({
+              id: scrapeTaskData.id,
+              status: ScrapeTaskStatus.CANCELED,
+            });
+          }
         } else {
-          // ssr endpoint
-          console.log('Invoke SSR scrapy enpoint');
+          const scrapeResponse = await fetch(`${scrapyApiBaseUrl}/ssr`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: scrapeTaskData.id,
+              website: scrapeTaskData.website.toString(),
+            }),
+          });
+          console.log(scrapeResponse.status);
+          if (scrapeResponse.ok) {
+            return scrapeTaskData;
+          } else {
+            return this.update({
+              id: scrapeTaskData.id,
+              status: ScrapeTaskStatus.CANCELED,
+            });
+          }
         }
-        break;
 
       default:
         throw new BadRequestException();
