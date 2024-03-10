@@ -18,8 +18,10 @@ export class UsersService {
     return this.userModel.findById(id);
   }
 
-  findOneByEmail(email: string) {
-    return this.userModel.findOne({ email });
+  async findOneByEmail(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (user) return user.toObject();
+    return user;
   }
 
   async createOne(userData: CreateUserDto, roles: Role[] = [Role.GUEST]) {

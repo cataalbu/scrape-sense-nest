@@ -28,7 +28,7 @@ export class AuthService {
     if (user) {
       if (comparePasswords(password, user.password)) {
         const { password, ...rest } = user;
-        return this.jwtService.sign(rest);
+        return { user: rest, token: this.jwtService.sign(rest) };
       }
     }
     return null;

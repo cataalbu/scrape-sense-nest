@@ -1,7 +1,7 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class UserDto {
-  @Expose()
+  @Expose({ name: '_id' })
   id: string;
 
   @Expose()
@@ -12,4 +12,12 @@ export class UserDto {
 
   @Expose()
   roles: string[];
+}
+
+export class UserAuthDto {
+  @Expose()
+  @Type(() => UserDto)
+  user: UserDto;
+  @Expose()
+  token: string;
 }

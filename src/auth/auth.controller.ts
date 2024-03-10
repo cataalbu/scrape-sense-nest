@@ -11,13 +11,13 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { UserDto } from 'src/users/dtos/user.dto';
+import { UserAuthDto } from 'src/users/dtos/user.dto';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { Request } from 'express';
 import { SkipAuth } from 'src/decorators/skip-auth.decorator';
 
-@Serialize(UserDto)
 @Controller('auth')
+@Serialize(UserAuthDto)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -32,13 +32,21 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() userData: CreateUserDto) {
     const user = await this.authService.signupUser(userData);
-    return user;
+    const auth = await this.authService.validateUser({
+      email: userData.email,
+      password: userData.password,
+    });
+    return auth;
   }
 
   @SkipAuth()
   @Post('signup/guest')
   async signupGuest(@Body() userData: CreateUserDto) {
     const user = await this.authService.signupGuest(userData);
-    return user;
+    const auth = await this.authService.validateUser({
+      email: userData.email,
+      password: userData.password,
+    });
+    return auth;
   }
 }
