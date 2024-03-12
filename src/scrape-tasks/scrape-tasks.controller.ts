@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Post,
@@ -20,6 +21,11 @@ import { ScrapeTaskStatus } from 'src/enums/scrape-task-status.enum';
 @Controller('scrape-tasks')
 export class ScrapeTasksController {
   constructor(private scrapeTasksService: ScrapeTasksService) {}
+
+  @Get()
+  async getScrapeTasks() {
+    return this.scrapeTasksService.find();
+  }
 
   @Post()
   async createScrapeTask(@Body() scrapeTaskData: CreateScrapeTaskDto) {
