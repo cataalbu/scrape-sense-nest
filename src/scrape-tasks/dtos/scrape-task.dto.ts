@@ -1,12 +1,23 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { ScrapeTaskStatus } from 'src/enums/scrape-task-status.enum';
 
+class ScrapeTaskWebsite {
+  @Expose()
+  @Transform((data) => {
+    return data.obj._id.toString();
+  })
+  id: string;
+
+  @Expose()
+  name: string;
+}
 export class ScrapeTaskDto {
   @Expose()
   id: string;
 
   @Expose()
-  website: string;
+  @Type(() => ScrapeTaskWebsite)
+  website: ScrapeTaskWebsite;
 
   @Expose()
   type: string;

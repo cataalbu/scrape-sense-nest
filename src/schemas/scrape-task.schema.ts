@@ -14,7 +14,7 @@ export class ScrapeTask {
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
-    ref: Website.name,
+    ref: 'Website',
   })
   website: Website;
 

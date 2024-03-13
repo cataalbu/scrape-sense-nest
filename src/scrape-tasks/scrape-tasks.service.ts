@@ -34,15 +34,21 @@ export class ScrapeTasksService {
     return scrapeTask.save();
   }
 
-  find() {
-    return this.scrapeTaskModel.find();
+  find(populate?: { path: string; select?: string }[]) {
+    return this.scrapeTaskModel
+      .find({})
+      .populate({ path: 'website', select: 'name' });
   }
 
-  findOneById(id: string) {
+  findOneById(
+    id: string,
+
+    populate?: { path: string; select?: string }[],
+  ) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();
     }
-    return this.scrapeTaskModel.findById(id);
+    return this.scrapeTaskModel.findById(id).populate(populate);
   }
 
   delete(id: string) {
