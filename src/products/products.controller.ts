@@ -17,6 +17,8 @@ export class ProductsController {
 
   @Get('/:id')
   getProduct(@Param('id') id: string) {
-    return this.productsService.findOneById(id);
+    return this.productsService.findOneById(id, [
+      { path: 'website', select: 'name' },
+    ]);
   }
 }

@@ -19,11 +19,11 @@ export class ProductsService {
     return this.productModel.find({}, excludeFields).populate(populate);
   }
 
-  findOneById(id: string) {
+  findOneById(id: string, populate?: { path: string; select?: string }[]) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();
     }
-    return this.productModel.findById(id);
+    return this.productModel.findById(id).populate(populate);
   }
 
   createOne(productData: CreateProductDto) {
