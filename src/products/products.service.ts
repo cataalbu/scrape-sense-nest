@@ -12,8 +12,11 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
-  findAll() {
-    return this.productModel.find();
+  findAll(
+    excludeFields?: Record<string, number>,
+    populate?: { path: string; select?: string }[],
+  ) {
+    return this.productModel.find({}, excludeFields).populate(populate);
   }
 
   findOneById(id: string) {

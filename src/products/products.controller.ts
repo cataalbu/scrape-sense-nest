@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ProductDto } from './dtos/product.dto';
 import { ProductsService } from './products.service';
@@ -10,7 +10,9 @@ export class ProductsController {
 
   @Get()
   getProducts() {
-    return this.productsService.findAll();
+    return this.productsService.findAll({ prices: 0 }, [
+      { path: 'website', select: 'name' },
+    ]);
   }
 
   @Get('/:id')

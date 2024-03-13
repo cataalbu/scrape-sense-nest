@@ -1,5 +1,16 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { Price } from 'src/types/price';
+
+class ProductWebsite {
+  @Expose()
+  @Transform((data) => {
+    return data.obj._id.toString();
+  })
+  id: string;
+
+  @Expose()
+  name: string;
+}
 
 export class ProductDto {
   @Expose()
@@ -21,5 +32,6 @@ export class ProductDto {
   websiteId: string;
 
   @Expose()
-  website: string;
+  @Type(() => ProductWebsite)
+  website: ProductWebsite;
 }
