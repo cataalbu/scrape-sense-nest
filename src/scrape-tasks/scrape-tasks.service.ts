@@ -35,9 +35,7 @@ export class ScrapeTasksService {
   }
 
   find(populate?: { path: string; select?: string }[]) {
-    return this.scrapeTaskModel
-      .find({})
-      .populate({ path: 'website', select: 'name' });
+    return this.scrapeTaskModel.find({}).populate(populate);
   }
 
   findOneById(

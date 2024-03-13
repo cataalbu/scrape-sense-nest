@@ -24,7 +24,7 @@ export class ScrapeTasksController {
 
   @Get()
   async getScrapeTasks() {
-    return this.scrapeTasksService.find([]);
+    return this.scrapeTasksService.find([{ path: 'website', select: 'name' }]);
   }
 
   @Post()
