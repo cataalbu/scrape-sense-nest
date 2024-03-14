@@ -27,6 +27,13 @@ export class ScrapeTasksController {
     return this.scrapeTasksService.find([{ path: 'website', select: 'name' }]);
   }
 
+  @Get('/:id')
+  async getScrapeTask(@Param('id') id: string) {
+    return this.scrapeTasksService.findOneById(id, [
+      { path: 'website', select: 'name' },
+    ]);
+  }
+
   @Post()
   async createScrapeTask(@Body() scrapeTaskData: CreateScrapeTaskDto) {
     const scrapeTask = await this.scrapeTasksService.create(scrapeTaskData);

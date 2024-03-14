@@ -38,11 +38,7 @@ export class ScrapeTasksService {
     return this.scrapeTaskModel.find({}).populate(populate);
   }
 
-  findOneById(
-    id: string,
-
-    populate?: { path: string; select?: string }[],
-  ) {
+  findOneById(id: string, populate?: { path: string; select?: string }[]) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();
     }
