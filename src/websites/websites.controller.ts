@@ -7,34 +7,38 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateWebsiteDto } from './dtos/create-website.dto';
 import { WebsitesService } from './websites.service';
 import { UpdateWebsiteDto } from './dtos/update-website.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { WebsiteDto } from './dtos/website.dto';
+import { WebsiteDto, WebsiteListDto } from './dtos/website.dto';
 
 @Controller('websites')
-@Serialize(WebsiteDto)
 export class WebsitesController {
   constructor(private websitesService: WebsitesService) {}
 
   @Get()
-  getWebsites() {
-    return this.websitesService.findAll();
+  @Serialize(WebsiteListDto)
+  getWebsites(@Query('skip') skip: number, @Query('limit') limit: number) {
+    return this.websitesService.findAllPaginated(skip, limit);
   }
 
   @Get('/:id')
+  @Serialize(WebsiteDto)
   getWebsite(@Param('id') id: string) {
     return this.websitesService.findOneById(id);
   }
 
   @Post()
+  @Serialize(WebsiteDto)
   createWebsite(@Body() websiteData: CreateWebsiteDto) {
     return this.websitesService.createOne(websiteData);
   }
 
   @Patch()
+  @Serialize(WebsiteDto)
   async updateWebsite(@Body() websiteData: UpdateWebsiteDto) {
     const website = await this.websitesService.updateOne(websiteData);
     if (!website) {
@@ -44,6 +48,7 @@ export class WebsitesController {
   }
 
   @Delete('/:id')
+  @Serialize(WebsiteDto)
   async deleteWebsite(@Param('id') id: string) {
     const website = await this.websitesService.deleteOne(id);
     if (!website) {

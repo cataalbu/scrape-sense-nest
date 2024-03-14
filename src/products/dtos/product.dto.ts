@@ -35,3 +35,15 @@ export class ProductDto {
   @Type(() => ProductWebsite)
   website: ProductWebsite;
 }
+
+export class ProductListDto {
+  @Expose()
+  @Type(() => ProductDto)
+  data: ProductDto[];
+
+  @Expose()
+  count: number;
+
+  @Expose()
+  pageTotal: number;
+}

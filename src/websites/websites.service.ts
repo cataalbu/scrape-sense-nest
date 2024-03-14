@@ -11,8 +11,15 @@ export class WebsitesService {
     @InjectModel(Website.name) private websiteModel: Model<Website>,
   ) {}
 
-  findAll() {
-    return this.websiteModel.find();
+  async findAll() {
+    return this.websiteModel.find({});
+  }
+
+  async findAllPaginated(skip?, limit?) {
+    const count = await this.websiteModel.countDocuments({}).exec();
+    const pageTotal = Math.ceil(count / limit) + 1 || 1;
+    const data = await this.websiteModel.find({}).skip(skip).limit(limit);
+    return { data, count, pageTotal };
   }
 
   async findOneById(id: string) {

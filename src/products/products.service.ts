@@ -12,11 +12,27 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
-  findAll(
+  async findAll(
     excludeFields?: Record<string, number>,
     populate?: { path: string; select?: string }[],
   ) {
     return this.productModel.find({}, excludeFields).populate(populate);
+  }
+
+  async findAllPaginated(
+    skip?,
+    limit?,
+    excludeFields?: Record<string, number>,
+    populate?: { path: string; select?: string }[],
+  ) {
+    const count = await this.productModel.countDocuments({}).exec();
+    const pageTotal = Math.ceil(count / limit) + 1 || 1;
+    const data = await this.productModel
+      .find({}, excludeFields)
+      .skip(skip)
+      .limit(limit)
+      .populate(populate);
+    return { data, count, pageTotal };
   }
 
   findOneById(id: string, populate?: { path: string; select?: string }[]) {

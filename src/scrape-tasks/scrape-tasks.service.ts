@@ -38,6 +38,21 @@ export class ScrapeTasksService {
     return this.scrapeTaskModel.find({}).populate(populate);
   }
 
+  async findPaginated(
+    skip?,
+    limit?,
+    populate?: { path: string; select?: string }[],
+  ) {
+    const count = await this.scrapeTaskModel.countDocuments({}).exec();
+    const pageTotal = Math.ceil(count / limit) + 1 || 1;
+    const data = await this.scrapeTaskModel
+      .find({})
+      .skip(skip)
+      .limit(limit)
+      .populate(populate);
+    return { data, count, pageTotal };
+  }
+
   findOneById(id: string, populate?: { path: string; select?: string }[]) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();

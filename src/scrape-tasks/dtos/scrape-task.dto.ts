@@ -34,3 +34,15 @@ export class ScrapeTaskDto {
   @Expose()
   scrapeCount: number;
 }
+
+export class ScrapeTaskListDto {
+  @Expose()
+  @Type(() => ScrapeTaskDto)
+  data: ScrapeTaskDto[];
+
+  @Expose()
+  count: number;
+
+  @Expose()
+  pageTotal: number;
+}
