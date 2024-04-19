@@ -15,11 +15,14 @@ import { WebsiteType } from 'src/enums/website-types.enum';
 import { UpdateScrapeTaskResultsDto } from './dtos/update-scrape-task-results.dto';
 import { ProductsService } from 'src/products/products.service';
 import { ConfigService } from '@nestjs/config';
+import { SqsService } from '@ssut/nestjs-sqs';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ScrapeTasksService {
   constructor(
     @InjectModel(ScrapeTask.name) private scrapeTaskModel: Model<ScrapeTask>,
+    private sqsService: SqsService,
     private websitesService: WebsitesService,
     private productsService: ProductsService,
     private configService: ConfigService,
@@ -85,96 +88,61 @@ export class ScrapeTasksService {
 
     switch (scrapeTaskData.type) {
       case ScrapeTaskType.PUPPETEER:
-        const puppeteerApiBaseUrl = this.configService.get('PUPPETEER_API_URL');
         if (website.type === WebsiteType.CSR) {
-          const scrapeResponse = await fetch(`${puppeteerApiBaseUrl}/csr`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': this.configService.get('PUPPETEER_API_KEY'),
+          this.sqsService.send(
+            this.configService.get('PUPPETEER_TASKS_QUEUE_NAME'),
+            {
+              id: uuid(),
+              body: JSON.stringify({
+                id: scrapeTaskData.id,
+                website: scrapeTaskData.website.toString(),
+                type: 'csr',
+              }),
             },
-            body: JSON.stringify({
-              id: scrapeTaskData.id,
-              website: scrapeTaskData.website.toString(),
-            }),
-          });
-
-          if (scrapeResponse.ok) {
-            return scrapeTaskData;
-          } else {
-            return this.update({
-              id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CRASHED,
-            });
-          }
+          );
+          return scrapeTaskData;
         } else {
-          const scrapeResponse = await fetch(`${puppeteerApiBaseUrl}/ssr`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': this.configService.get('PUPPETEER_API_KEY'),
+          this.sqsService.send(
+            this.configService.get('PUPPETEER_TASKS_QUEUE_NAME'),
+            {
+              id: uuid(),
+              body: JSON.stringify({
+                id: scrapeTaskData.id,
+                website: scrapeTaskData.website.toString(),
+                type: 'ssr',
+              }),
             },
-            body: JSON.stringify({
-              id: scrapeTaskData.id,
-              website: scrapeTaskData.website.toString(),
-            }),
-          });
-          if (scrapeResponse.ok) {
-            return scrapeTaskData;
-          } else {
-            return this.update({
-              id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CRASHED,
-            });
-          }
+          );
+          return scrapeTaskData;
         }
-
       case ScrapeTaskType.SCRAPY:
-        const scrapyApiBaseUrl = this.configService.get('SCRAPY_API_URL');
-
         if (website.type === WebsiteType.CSR) {
-          const scrapeResponse = await fetch(`${scrapyApiBaseUrl}/csr`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': this.configService.get('SCRAPY_API_KEY'),
+          this.sqsService.send(
+            this.configService.get('SCRAPY_TASKS_QUEUE_NAME'),
+            {
+              id: uuid(),
+              body: JSON.stringify({
+                id: scrapeTaskData.id,
+                website: scrapeTaskData.website.toString(),
+                type: 'csr',
+              }),
             },
-            body: JSON.stringify({
-              id: scrapeTaskData.id,
-              website: scrapeTaskData.website.toString(),
-            }),
-          });
-
-          if (scrapeResponse.ok) {
-            return scrapeTaskData;
-          } else {
-            return this.update({
-              id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CRASHED,
-            });
-          }
+          );
+          return scrapeTaskData;
         } else {
-          const scrapeResponse = await fetch(`${scrapyApiBaseUrl}/ssr`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-api-key': this.configService.get('SCRAPY_API_KEY'),
+          this.sqsService.send(
+            this.configService.get('SCRAPY_TASKS_QUEUE_NAME'),
+            {
+              id: uuid(),
+              body: JSON.stringify({
+                id: scrapeTaskData.id,
+                website: scrapeTaskData.website.toString(),
+                type: 'ssr',
+              }),
             },
-            body: JSON.stringify({
-              id: scrapeTaskData.id,
-              website: scrapeTaskData.website.toString(),
-            }),
-          });
-          if (scrapeResponse.ok) {
-            return scrapeTaskData;
-          } else {
-            return this.update({
-              id: scrapeTaskData.id,
-              status: ScrapeTaskStatus.CRASHED,
-            });
-          }
+          );
+          return scrapeTaskData;
         }
-
       default:
         throw new BadRequestException();
     }
