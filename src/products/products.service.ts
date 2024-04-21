@@ -4,12 +4,15 @@ import { Model, Types } from 'mongoose';
 import { Product } from 'src/schemas/product.schema';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { UpdateProductInfoDto } from './dtos/update-product-info.dto';
+import { ProductInfoDto } from './dtos/product-info.dto';
+import { WebsitesService } from 'src/websites/websites.service';
+import { ScrapedProduct } from 'src/schemas/scraped-product.schema';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<Product>,
+    private websiteService: WebsitesService,
   ) {}
 
   async findAll(
@@ -47,27 +50,29 @@ export class ProductsService {
     return product.save();
   }
 
-  updateProductInfo({
-    websiteId,
-    price,
-    website,
-    ...productInfo
-  }: UpdateProductInfoDto) {
+  async updateOrCreateWithProductInfo(productInfo: ScrapedProduct) {
+    const website = await this.websiteService.findOneByUrl(
+      productInfo.websiteURL,
+    );
     return this.productModel.findOneAndUpdate(
-      { websiteId, website },
-      { $set: productInfo, $push: { prices: price } },
-      { new: true },
+      { websiteId: productInfo.websiteId, website: website.id },
+      {
+        $set: {
+          name: productInfo.name,
+          imageURL: productInfo.imageURL,
+          rating: productInfo.rating,
+          websiteId: productInfo.websiteId,
+          website: website.id.toString(),
+        },
+        $push: { prices: { price: productInfo.price, date: productInfo.date } },
+      },
+      { new: true, upsert: true },
     );
   }
 
-  updateProductsWithScrapedProducts(productsInfo: UpdateProductInfoDto[]) {
-    const promises = productsInfo.map(async (productInfo) => {
-      const product = await this.updateProductInfo(productInfo);
-      if (!product) {
-        const { price, ...prod } = productInfo;
-        return this.createOne({ ...prod, prices: [price] });
-      }
-      return product;
+  async updateProductsWithScrapedProducts(products: ScrapedProduct[]) {
+    const promises = products.map(async (productInfo: ScrapedProduct) => {
+      return await this.updateOrCreateWithProductInfo(productInfo);
     });
     return Promise.all(promises);
   }

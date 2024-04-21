@@ -8,7 +8,7 @@ export class ScrapedProduct {
   name: string;
 
   @Prop({ required: true })
-  imageUrl: string;
+  imageURL: string;
 
   @Prop({ required: true })
   price: number;
@@ -18,6 +18,12 @@ export class ScrapedProduct {
 
   @Prop({ required: true })
   websiteId: string;
+
+  @Prop({ required: true })
+  websiteURL: string;
+
+  @Prop({ required: true })
+  date: Date;
 }
 
 export const ScrapedProductSchema =

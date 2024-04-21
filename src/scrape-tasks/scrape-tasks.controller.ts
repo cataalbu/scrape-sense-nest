@@ -44,23 +44,4 @@ export class ScrapeTasksController {
     const task = await this.scrapeTasksService.runTask(scrapeTask);
     return task;
   }
-
-  @Patch('/results')
-  @SkipAuth()
-  @UseGuards(ApiKeyAuthGuard)
-  @Serialize(ScrapeTaskDto)
-  updateScrapeTaskResults(@Body() scrapedTaskData: UpdateScrapeTaskResultsDto) {
-    return this.scrapeTasksService.updateScrapeTaskResults(scrapedTaskData);
-  }
-
-  @Patch('/crash/:id')
-  @SkipAuth()
-  @UseGuards(ApiKeyAuthGuard)
-  @Serialize(ScrapeTaskDto)
-  crashScrapeTask(@Param('id') id: string) {
-    return this.scrapeTasksService.update({
-      id,
-      status: ScrapeTaskStatus.CRASHED,
-    });
-  }
 }

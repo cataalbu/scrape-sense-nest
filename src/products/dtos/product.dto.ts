@@ -20,7 +20,7 @@ export class ProductDto {
   name: string;
 
   @Expose()
-  imageUrl: string;
+  imageURL: string;
 
   @Expose()
   prices: Price[];

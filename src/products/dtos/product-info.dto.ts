@@ -10,29 +10,17 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-class Price {
-  @IsDate()
-  @Type(() => Date)
-  date: Date;
-
-  @IsNumber()
-  @Min(0)
-  price: number;
-}
-
-export class UpdateProductInfoDto {
+export class ProductInfoDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
   @IsString()
   @IsNotEmpty()
-  imageUrl: string;
+  imageURL: string;
 
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => Price)
-  price: Price;
+  @IsNumber()
+  price: number;
 
   @IsInt()
   @Min(0)
@@ -45,5 +33,8 @@ export class UpdateProductInfoDto {
 
   @IsString()
   @IsNotEmpty()
-  website: string;
+  websiteURL: string;
+
+  @IsDate()
+  date: Date;
 }

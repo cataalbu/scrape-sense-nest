@@ -13,7 +13,7 @@ import { WebsitesService } from 'src/websites/websites.service';
 import { ScrapeTaskType } from 'src/enums/scrape-task-types.enum';
 import { WebsiteType } from 'src/enums/website-types.enum';
 import { UpdateScrapeTaskResultsDto } from './dtos/update-scrape-task-results.dto';
-import { ProductsService } from 'src/products/products.service';
+
 import { ConfigService } from '@nestjs/config';
 import { SqsService } from '@ssut/nestjs-sqs';
 import { v4 as uuid } from 'uuid';
@@ -24,7 +24,6 @@ export class ScrapeTasksService {
     @InjectModel(ScrapeTask.name) private scrapeTaskModel: Model<ScrapeTask>,
     private sqsService: SqsService,
     private websitesService: WebsitesService,
-    private productsService: ProductsService,
     private configService: ConfigService,
   ) {}
 
@@ -97,6 +96,7 @@ export class ScrapeTasksService {
                 id: scrapeTaskData.id,
                 website: scrapeTaskData.website.toString(),
                 type: 'csr',
+                scraper: ScrapeTaskType.PUPPETEER,
               }),
             },
           );
@@ -110,6 +110,7 @@ export class ScrapeTasksService {
                 id: scrapeTaskData.id,
                 website: scrapeTaskData.website.toString(),
                 type: 'ssr',
+                scraper: ScrapeTaskType.PUPPETEER,
               }),
             },
           );
@@ -125,6 +126,7 @@ export class ScrapeTasksService {
                 id: scrapeTaskData.id,
                 website: scrapeTaskData.website.toString(),
                 type: 'csr',
+                scraper: ScrapeTaskType.SCRAPY,
               }),
             },
           );
@@ -138,6 +140,7 @@ export class ScrapeTasksService {
                 id: scrapeTaskData.id,
                 website: scrapeTaskData.website.toString(),
                 type: 'ssr',
+                scraper: ScrapeTaskType.SCRAPY,
               }),
             },
           );
@@ -148,17 +151,7 @@ export class ScrapeTasksService {
     }
   }
 
-  async updateScrapeTaskResults({
-    scrapedProducts,
-    ...scrapedTaskData
-  }: UpdateScrapeTaskResultsDto) {
-    await this.productsService.updateProductsWithScrapedProducts(
-      scrapedProducts,
-    );
-    const task = await this.update({
-      ...scrapedTaskData,
-      status: ScrapeTaskStatus.FINISHED,
-    });
-    return task;
+  async updateScrapeTaskResults(scrapedTaskData: UpdateScrapeTaskResultsDto) {
+    return this.update(scrapedTaskData);
   }
 }

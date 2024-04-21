@@ -1,12 +1,13 @@
 import {
   IsDate,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UpdateProductInfoDto } from 'src/products/dtos/update-product-info.dto';
+import { ScrapeTaskStatus } from 'src/enums/scrape-task-status.enum';
 
 export class UpdateScrapeTaskResultsDto {
   @IsString()
@@ -24,7 +25,6 @@ export class UpdateScrapeTaskResultsDto {
   @IsNumber()
   scrapeCount: number;
 
-  @ValidateNested({ each: true })
-  @Type(() => UpdateProductInfoDto)
-  scrapedProducts: UpdateProductInfoDto[];
+  @IsEnum(ScrapeTaskStatus)
+  status: ScrapeTaskStatus;
 }

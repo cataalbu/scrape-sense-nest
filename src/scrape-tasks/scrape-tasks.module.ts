@@ -8,6 +8,9 @@ import { WebsitesModule } from 'src/websites/websites.module';
 import * as express from 'express';
 import { SqsModule } from '@ssut/nestjs-sqs';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ProcessedTaskConsumerService } from './processed-task-consumer.service';
+import { ScrapedProductsService } from 'src/scraped-products/scraped-products.service';
+import { ScrapedProductsModule } from 'src/scraped-products/scraped-products.module';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -19,27 +22,37 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     SqsModule.registerAsync({
       inject: [ConfigService],
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        consumers: [],
-        producers: [
-          {
-            name: configService.get('SCRAPY_TASKS_QUEUE_NAME'),
-            queueUrl: configService.get('SCRAPY_TASKS_QUEUE_URL'),
-            region: configService.get('AWS_REGION'),
-          },
-          {
-            name: configService.get('PUPPETEER_TASKS_QUEUE_NAME'),
-            queueUrl: configService.get('PUPPETEER_TASKS_QUEUE_URL'),
-            region: configService.get('AWS_REGION'),
-          },
-        ],
-      }),
+      useFactory: async (configService: ConfigService) => {
+        console.log();
+        return {
+          consumers: [
+            {
+              name: configService.get('NEST_TASKS_QUEUE_NAME'),
+              queueUrl: configService.get('NEST_TASKS_QUEUE_URL'),
+              region: configService.get('AWS_REGION'),
+            },
+          ],
+          producers: [
+            {
+              name: configService.get('SCRAPY_TASKS_QUEUE_NAME'),
+              queueUrl: configService.get('SCRAPY_TASKS_QUEUE_URL'),
+              region: configService.get('AWS_REGION'),
+            },
+            {
+              name: configService.get('PUPPETEER_TASKS_QUEUE_NAME'),
+              queueUrl: configService.get('PUPPETEER_TASKS_QUEUE_URL'),
+              region: configService.get('AWS_REGION'),
+            },
+          ],
+        };
+      },
     }),
     ProductsModule,
     WebsitesModule,
+    ScrapedProductsModule,
   ],
   controllers: [ScrapeTasksController],
-  providers: [ScrapeTasksService],
+  providers: [ScrapeTasksService, ProcessedTaskConsumerService],
 })
 export class ScrapeTasksModule {
   configure(consumer: MiddlewareConsumer) {

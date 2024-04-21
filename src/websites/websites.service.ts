@@ -47,4 +47,8 @@ export class WebsitesService {
   deleteOne(id: string) {
     return this.websiteModel.findByIdAndDelete(id);
   }
+
+  findOneByUrl(url: string) {
+    return this.websiteModel.findOne({ url });
+  }
 }

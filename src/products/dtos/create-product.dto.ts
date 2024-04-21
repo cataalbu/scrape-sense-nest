@@ -27,7 +27,7 @@ export class CreateProductDto {
 
   @IsString()
   @IsNotEmpty()
-  imageUrl: string;
+  imageURL: string;
 
   @ValidateNested({ each: true })
   @Type(() => Price)

@@ -11,7 +11,7 @@ export class Product {
   name: string;
 
   @Prop({ required: true })
-  imageUrl: string;
+  imageURL: string;
 
   @Prop({ required: true })
   prices: Price[];

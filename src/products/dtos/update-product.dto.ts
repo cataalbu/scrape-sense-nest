@@ -29,7 +29,7 @@ export class UpdateProductDto {
   name?: string;
 
   @IsString()
-  imageUrl?: string;
+  imageURL?: string;
 
   @ValidateNested({ each: true })
   @Type(() => Price)

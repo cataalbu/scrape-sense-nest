@@ -12,6 +12,7 @@ import { ApiKeysModule } from './api-keys/api-keys.module';
 import { WebsitesModule } from './websites/websites.module';
 import { ProductsModule } from './products/products.module';
 import { ScrapeTasksModule } from './scrape-tasks/scrape-tasks.module';
+import { ScrapedProductsModule } from './scraped-products/scraped-products.module';
 
 @Module({
   imports: [
@@ -26,6 +27,22 @@ import { ScrapeTasksModule } from './scrape-tasks/scrape-tasks.module';
       }),
       inject: [ConfigService],
     }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      connectionName: 'scrapyConnection',
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('SCRAPY_MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      connectionName: 'puppeteerConnection',
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('PUPPETEER_MONGODB_URI'),
+      }),
+      inject: [ConfigService],
+    }),
 
     UsersModule,
     AuthModule,
@@ -33,6 +50,7 @@ import { ScrapeTasksModule } from './scrape-tasks/scrape-tasks.module';
     WebsitesModule,
     ProductsModule,
     ScrapeTasksModule,
+    ScrapedProductsModule,
   ],
   controllers: [AppController],
   providers: [
