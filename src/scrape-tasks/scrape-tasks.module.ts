@@ -30,6 +30,7 @@ import { ScrapedProductsModule } from 'src/scraped-products/scraped-products.mod
               name: configService.get('NEST_TASKS_QUEUE_NAME'),
               queueUrl: configService.get('NEST_TASKS_QUEUE_URL'),
               region: configService.get('AWS_REGION'),
+              pollingWaitTimeMs: 10000,
             },
           ],
           producers: [
