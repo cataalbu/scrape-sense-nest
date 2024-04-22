@@ -17,7 +17,7 @@ import { ScrapedProductsModule } from './scraped-products/scraped-products.modul
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      // envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({
