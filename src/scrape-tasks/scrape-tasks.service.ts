@@ -27,7 +27,14 @@ export class ScrapeTasksService {
     private configService: ConfigService,
   ) {}
 
-  create(scrapeTaskData: CreateScrapeTaskDto) {
+  async create(scrapeTaskData: CreateScrapeTaskDto) {
+    const website = await this.websitesService.findOneById(
+      scrapeTaskData.website,
+    );
+
+    if (!website) {
+      throw new NotFoundException();
+    }
     const scrapeTask = new this.scrapeTaskModel({
       ...scrapeTaskData,
       status: ScrapeTaskStatus.RUNNING,
@@ -84,6 +91,10 @@ export class ScrapeTasksService {
     const website = await this.websitesService.findOneById(
       scrapeTaskData.website.toString(),
     );
+
+    if (!website) {
+      throw new NotFoundException();
+    }
 
     switch (scrapeTaskData.type) {
       case ScrapeTaskType.PUPPETEER:
