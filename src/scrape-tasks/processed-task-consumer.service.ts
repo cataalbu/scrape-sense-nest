@@ -30,7 +30,7 @@ export class ProcessedTaskConsumerService {
         products =
           await this.scrapedProductsService.findScrapyScrapedProducts();
       }
-      await this.productsService.updateProductsWithScrapedProducts(products);
+      this.productsService.updateProductsWithScrapedProducts(products);
       const ids = products.map((product) => product.id.toString());
       if (data.scraper === ScrapeTaskType.PUPPETEER) {
         await this.scrapedProductsService.deletePuppeteerScrapedProducts(ids);

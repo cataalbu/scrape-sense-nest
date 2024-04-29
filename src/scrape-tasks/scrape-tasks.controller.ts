@@ -1,25 +1,18 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ScrapeTasksService } from './scrape-tasks.service';
 import { CreateScrapeTaskDto } from './dtos/create-scrape-task.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ScrapeTaskDto, ScrapeTaskListDto } from './dtos/scrape-task.dto';
-import { UpdateScrapeTaskResultsDto } from './dtos/update-scrape-task-results.dto';
-import { SkipAuth } from 'src/decorators/skip-auth.decorator';
-import { ApiKeyAuthGuard } from 'src/guards/api-key-auth.guard';
-import { ScrapeTaskStatus } from 'src/enums/scrape-task-status.enum';
+import { ScrapedProductsService } from 'src/scraped-products/scraped-products.service';
+import { ProductsService } from 'src/products/products.service';
 
 @Controller('scrape-tasks')
 export class ScrapeTasksController {
-  constructor(private scrapeTasksService: ScrapeTasksService) {}
+  constructor(
+    private scrapeTasksService: ScrapeTasksService,
+    private scrapedProductsService: ScrapedProductsService,
+    private productsService: ProductsService,
+  ) {}
 
   @Get()
   @Serialize(ScrapeTaskListDto)
