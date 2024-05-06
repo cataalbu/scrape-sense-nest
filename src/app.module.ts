@@ -13,6 +13,7 @@ import { WebsitesModule } from './websites/websites.module';
 import { ProductsModule } from './products/products.module';
 import { ScrapeTasksModule } from './scrape-tasks/scrape-tasks.module';
 import { ScrapedProductsModule } from './scraped-products/scraped-products.module';
+import { CloudWatchDataModule } from './cloud-watch-data/cloud-watch-data.module';
 
 @Module({
   imports: [
@@ -43,7 +44,6 @@ import { ScrapedProductsModule } from './scraped-products/scraped-products.modul
       }),
       inject: [ConfigService],
     }),
-
     UsersModule,
     AuthModule,
     ApiKeysModule,
@@ -51,6 +51,7 @@ import { ScrapedProductsModule } from './scraped-products/scraped-products.modul
     ProductsModule,
     ScrapeTasksModule,
     ScrapedProductsModule,
+    CloudWatchDataModule,
   ],
   controllers: [AppController],
   providers: [

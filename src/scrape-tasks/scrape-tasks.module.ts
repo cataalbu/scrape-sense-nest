@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProcessedTaskConsumerService } from './processed-task-consumer.service';
 import { ScrapedProductsService } from 'src/scraped-products/scraped-products.service';
 import { ScrapedProductsModule } from 'src/scraped-products/scraped-products.module';
+import { CloudWatchDataModule } from 'src/cloud-watch-data/cloud-watch-data.module';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -51,6 +52,7 @@ import { ScrapedProductsModule } from 'src/scraped-products/scraped-products.mod
     ProductsModule,
     WebsitesModule,
     ScrapedProductsModule,
+    CloudWatchDataModule,
   ],
   controllers: [ScrapeTasksController],
   providers: [ScrapeTasksService, ProcessedTaskConsumerService],

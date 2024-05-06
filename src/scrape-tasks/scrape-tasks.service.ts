@@ -12,7 +12,10 @@ import { ScrapeTaskStatus } from 'src/enums/scrape-task-status.enum';
 import { WebsitesService } from 'src/websites/websites.service';
 import { ScrapeTaskType } from 'src/enums/scrape-task-types.enum';
 import { WebsiteType } from 'src/enums/website-types.enum';
-import { UpdateScrapeTaskResultsDto } from './dtos/update-scrape-task-results.dto';
+import {
+  UpdateScrapeTaskMetricsDto,
+  UpdateScrapeTaskResultsDto,
+} from './dtos/update-scrape-task-results.dto';
 
 import { ConfigService } from '@nestjs/config';
 import { SqsService } from '@ssut/nestjs-sqs';
@@ -162,7 +165,9 @@ export class ScrapeTasksService {
     }
   }
 
-  async updateScrapeTaskResults(scrapedTaskData: UpdateScrapeTaskResultsDto) {
+  async updateScrapeTaskResults(
+    scrapedTaskData: UpdateScrapeTaskResultsDto | UpdateScrapeTaskMetricsDto,
+  ) {
     return this.update(scrapedTaskData);
   }
 }
