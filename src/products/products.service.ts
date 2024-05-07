@@ -27,11 +27,21 @@ export class ProductsService {
     limit?,
     excludeFields?: Record<string, number>,
     populate?: { path: string; select?: string }[],
+    filter?,
   ) {
-    const count = await this.productModel.countDocuments({}).exec();
+    const count = await this.productModel
+      .countDocuments({
+        ...filter,
+      })
+      .exec();
     const pageTotal = Math.ceil(count / limit) + 1 || 1;
     const data = await this.productModel
-      .find({}, excludeFields)
+      .find(
+        {
+          ...filter,
+        },
+        excludeFields,
+      )
       .skip(skip)
       .limit(limit)
       .populate(populate);

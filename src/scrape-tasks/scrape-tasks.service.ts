@@ -63,7 +63,11 @@ export class ScrapeTasksService {
       dir = sort[0] === '-' ? -1 : 1;
       field = sort[0] === '-' ? sort.slice(1) : sort;
     }
-    const count = await this.scrapeTaskModel.countDocuments({}).exec();
+    const count = await this.scrapeTaskModel
+      .countDocuments({
+        ...filter,
+      })
+      .exec();
     const pageTotal = Math.ceil(count / limit) + 1 || 1;
     const data = await this.scrapeTaskModel
       .find({
