@@ -24,8 +24,9 @@ export class ProcessedTaskConsumerService {
   async getCloudWatchData(startTime, endTime, scraper): Promise<MetricsData> {
     const instanceId =
       scraper === ScrapeTaskType.SCRAPY
-        ? this.configService.get('PUPPETEER_INSTANCE_ID')
-        : this.configService.get('SCRAPY_INSTANCE_ID');
+        ? this.configService.get('SCRAPY_INSTANCE_ID')
+        : this.configService.get('PUPPETEER_INSTANCE_ID');
+
     const data = await this.cloudwatchDataService.getInstaceMetricData(
       instanceId,
       startTime,
