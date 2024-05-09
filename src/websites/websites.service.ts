@@ -17,7 +17,7 @@ export class WebsitesService {
 
   async findAllPaginated(skip?, limit?) {
     const count = await this.websiteModel.countDocuments({}).exec();
-    const pageTotal = Math.ceil(count / limit) + 1 || 1;
+    const pageTotal = Math.ceil(count / limit) || 1;
     const data = await this.websiteModel.find({}).skip(skip).limit(limit);
     return { data, count, pageTotal };
   }
@@ -36,8 +36,7 @@ export class WebsitesService {
   }
 
   createOne(websiteData: CreateWebsiteDto) {
-    const website = new this.websiteModel(websiteData);
-    return website.save();
+    return this.websiteModel.create(websiteData);
   }
 
   updateOne({ id, ...websiteData }: UpdateWebsiteDto) {

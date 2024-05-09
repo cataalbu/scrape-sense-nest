@@ -4,7 +4,6 @@ import { Model, Types } from 'mongoose';
 import { Product } from 'src/schemas/product.schema';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { ProductInfoDto } from './dtos/product-info.dto';
 import { WebsitesService } from 'src/websites/websites.service';
 import { ScrapedProduct } from 'src/schemas/scraped-product.schema';
 
