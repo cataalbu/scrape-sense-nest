@@ -5,7 +5,6 @@ import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { AppController } from './app.controller';
 import { RolesGuard } from './guards/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiKeysModule } from './api-keys/api-keys.module';
@@ -24,7 +23,10 @@ import { CloudWatchDataModule } from './cloud-watch-data/cloud-watch-data.module
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
+        uri:
+          configService.get('NODE_ENV') === 'test'
+            ? configService.get<string>('TEST_MONGODB_URI')
+            : configService.get<string>('MONGODB_URI'),
       }),
       inject: [ConfigService],
     }),
@@ -53,7 +55,7 @@ import { CloudWatchDataModule } from './cloud-watch-data/cloud-watch-data.module
     ScrapedProductsModule,
     CloudWatchDataModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     {
       provide: APP_PIPE,

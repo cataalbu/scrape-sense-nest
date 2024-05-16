@@ -38,12 +38,10 @@ export class ScrapeTasksService {
     if (!website) {
       throw new NotFoundException();
     }
-    const scrapeTask = new this.scrapeTaskModel({
+    return this.scrapeTaskModel.create({
       ...scrapeTaskData,
       status: ScrapeTaskStatus.RUNNING,
     });
-
-    return scrapeTask.save();
   }
 
   find(populate?: { path: string; select?: string }[]) {

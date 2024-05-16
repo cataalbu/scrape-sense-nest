@@ -30,8 +30,7 @@ export class UsersService {
       throw new BadRequestException('Email already in use');
     }
     const password = hashPassword(userData.password);
-    const user = new this.userModel({ ...userData, password, roles });
-    return user.save();
+    return this.userModel.create({ ...userData, password, roles });
   }
 
   deleteOne(id: string) {

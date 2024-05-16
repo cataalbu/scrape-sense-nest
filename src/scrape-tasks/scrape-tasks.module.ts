@@ -24,16 +24,18 @@ import { CloudWatchDataModule } from 'src/cloud-watch-data/cloud-watch-data.modu
       inject: [ConfigService],
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        console.log();
         return {
-          consumers: [
-            {
-              name: configService.get('NEST_TASKS_QUEUE_NAME'),
-              queueUrl: configService.get('NEST_TASKS_QUEUE_URL'),
-              region: configService.get('AWS_REGION'),
-              pollingWaitTimeMs: 10000,
-            },
-          ],
+          consumers:
+            configService.get('NODE_ENV') !== 'test'
+              ? [
+                  {
+                    name: configService.get('NEST_TASKS_QUEUE_NAME'),
+                    queueUrl: configService.get('NEST_TASKS_QUEUE_URL'),
+                    region: configService.get('AWS_REGION'),
+                    pollingWaitTimeMs: 10000,
+                  },
+                ]
+              : [],
           producers: [
             {
               name: configService.get('SCRAPY_TASKS_QUEUE_NAME'),

@@ -55,8 +55,7 @@ export class ProductsService {
   }
 
   createOne(productData: CreateProductDto) {
-    const product = new this.productModel(productData);
-    return product.save();
+    return this.productModel.create(productData);
   }
 
   async updateOrCreateWithProductInfo(productInfo: ScrapedProduct) {

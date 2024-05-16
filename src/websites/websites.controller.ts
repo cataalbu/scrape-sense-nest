@@ -14,6 +14,8 @@ import { WebsitesService } from './websites.service';
 import { UpdateWebsiteDto } from './dtos/update-website.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { WebsiteDto, WebsiteListDto } from './dtos/website.dto';
+import { Roles } from 'src/decorators/roles.decorators';
+import { Role } from 'src/enums/roles.enum';
 
 @Controller('websites')
 export class WebsitesController {
@@ -31,6 +33,7 @@ export class WebsitesController {
     return this.websitesService.findOneById(id);
   }
 
+  @Roles(Role.ADMIN, Role.USER)
   @Post()
   @Serialize(WebsiteDto)
   createWebsite(@Body() websiteData: CreateWebsiteDto) {

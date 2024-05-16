@@ -14,9 +14,9 @@ export class ScrapeTasksController {
   getScrapeTasks(
     @Query('skip') skip: number,
     @Query('limit') limit: number,
-    @Query('sort') sort: string,
-    @Query('website') website: string,
-    @Query('type') type: ScrapeTaskType,
+    @Query('sort') sort?: string,
+    @Query('website') website?: string,
+    @Query('type') type?: ScrapeTaskType,
   ) {
     const filter = {};
     if (website) {
