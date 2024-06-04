@@ -47,7 +47,7 @@ export class ProcessedTaskConsumerService {
       () => {
         clearInterval(interval);
       },
-      5 * 60 * 1000,
+      6 * 60 * 1000,
     );
   }
 
