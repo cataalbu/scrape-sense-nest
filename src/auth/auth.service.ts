@@ -11,17 +11,8 @@ import { ApiKeysService } from 'src/api-keys/api-keys.service';
 export class AuthService {
   constructor(
     private userService: UsersService,
-    private apiKeysService: ApiKeysService,
     private jwtService: JwtService,
   ) {}
-
-  async validateApiKey(key: string) {
-    const apiKey = await this.apiKeysService.findOneByKey(key);
-    if (apiKey) {
-      return true;
-    }
-    return false;
-  }
 
   async validateUser({ email, password }: AuthDto) {
     const user = await this.userService.findOneByEmail(email);

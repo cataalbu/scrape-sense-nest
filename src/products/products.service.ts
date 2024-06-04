@@ -4,7 +4,6 @@ import { Model, Types } from 'mongoose';
 import { Product } from 'src/schemas/product.schema';
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { ProductInfoDto } from './dtos/product-info.dto';
 import { WebsitesService } from 'src/websites/websites.service';
 import { ScrapedProduct } from 'src/schemas/scraped-product.schema';
 import async from 'async';
@@ -28,11 +27,21 @@ export class ProductsService {
     limit?,
     excludeFields?: Record<string, number>,
     populate?: { path: string; select?: string }[],
+    filter?,
   ) {
-    const count = await this.productModel.countDocuments({}).exec();
+    const count = await this.productModel
+      .countDocuments({
+        ...filter,
+      })
+      .exec();
     const pageTotal = Math.ceil(count / limit) + 1 || 1;
     const data = await this.productModel
-      .find({}, excludeFields)
+      .find(
+        {
+          ...filter,
+        },
+        excludeFields,
+      )
       .skip(skip)
       .limit(limit)
       .populate(populate);
@@ -47,8 +56,7 @@ export class ProductsService {
   }
 
   createOne(productData: CreateProductDto) {
-    const product = new this.productModel(productData);
-    return product.save();
+    return this.productModel.create(productData);
   }
 
   async updateOrCreateWithProductInfo(productInfo: ScrapedProduct) {

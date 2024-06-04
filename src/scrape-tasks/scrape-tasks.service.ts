@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, Types } from 'mongoose';
+import { Document, Model, SortOrder, Types } from 'mongoose';
 import { ScrapeTask } from 'src/schemas/scrape-task.schema';
 import { CreateScrapeTaskDto } from './dtos/create-scrape-task.dto';
 import { UpdateScrapTaskDto } from './dtos/update-scrape-task.dto';
@@ -12,7 +12,10 @@ import { ScrapeTaskStatus } from 'src/enums/scrape-task-status.enum';
 import { WebsitesService } from 'src/websites/websites.service';
 import { ScrapeTaskType } from 'src/enums/scrape-task-types.enum';
 import { WebsiteType } from 'src/enums/website-types.enum';
-import { UpdateScrapeTaskResultsDto } from './dtos/update-scrape-task-results.dto';
+import {
+  UpdateScrapeTaskMetricsDto,
+  UpdateScrapeTaskResultsDto,
+} from './dtos/update-scrape-task-results.dto';
 
 import { ConfigService } from '@nestjs/config';
 import { SqsService } from '@ssut/nestjs-sqs';
@@ -35,12 +38,10 @@ export class ScrapeTasksService {
     if (!website) {
       throw new NotFoundException();
     }
-    const scrapeTask = new this.scrapeTaskModel({
+    return this.scrapeTaskModel.create({
       ...scrapeTaskData,
       status: ScrapeTaskStatus.RUNNING,
     });
-
-    return scrapeTask.save();
   }
 
   find(populate?: { path: string; select?: string }[]) {
@@ -51,22 +52,46 @@ export class ScrapeTasksService {
     skip?,
     limit?,
     populate?: { path: string; select?: string }[],
+    sort?,
+    filter?,
   ) {
-    const count = await this.scrapeTaskModel.countDocuments({}).exec();
+    let dir = 1;
+    let field = 'createdAt';
+    if (sort) {
+      dir = sort[0] === '-' ? -1 : 1;
+      field = sort[0] === '-' ? sort.slice(1) : sort;
+    }
+    const count = await this.scrapeTaskModel
+      .countDocuments({
+        ...filter,
+      })
+      .exec();
     const pageTotal = Math.ceil(count / limit) + 1 || 1;
     const data = await this.scrapeTaskModel
-      .find({})
+      .find({
+        ...filter,
+      })
+      .sort({
+        [field]: dir as SortOrder,
+      })
       .skip(skip)
       .limit(limit)
       .populate(populate);
     return { data, count, pageTotal };
   }
 
-  findOneById(id: string, populate?: { path: string; select?: string }[]) {
+  async findOneById(
+    id: string,
+    populate?: { path: string; select?: string }[],
+  ) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException();
     }
-    return this.scrapeTaskModel.findById(id).populate(populate);
+    const task = await this.scrapeTaskModel.findById(id).populate(populate);
+    if (!task) {
+      throw new NotFoundException();
+    }
+    return task;
   }
 
   delete(id: string) {
@@ -162,7 +187,9 @@ export class ScrapeTasksService {
     }
   }
 
-  async updateScrapeTaskResults(scrapedTaskData: UpdateScrapeTaskResultsDto) {
+  async updateScrapeTaskResults(
+    scrapedTaskData: UpdateScrapeTaskResultsDto | UpdateScrapeTaskMetricsDto,
+  ) {
     return this.update(scrapedTaskData);
   }
 }

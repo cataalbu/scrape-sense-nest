@@ -2,6 +2,7 @@ import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ProductDto, ProductListDto } from './dtos/product.dto';
 import { ProductsService } from './products.service';
+import { filter } from 'rxjs';
 
 @Controller('products')
 export class ProductsController {
@@ -9,10 +10,22 @@ export class ProductsController {
 
   @Get()
   @Serialize(ProductListDto)
-  getProducts(@Query('skip') skip: number, @Query('limit') limit: number) {
-    return this.productsService.findAllPaginated(skip, limit, { prices: 0 }, [
-      { path: 'website', select: 'name' },
-    ]);
+  getProducts(
+    @Query('skip') skip: number,
+    @Query('limit') limit: number,
+    @Query('website') website: string,
+  ) {
+    const filter = {};
+    if (website) {
+      filter['website'] = website;
+    }
+    return this.productsService.findAllPaginated(
+      skip,
+      limit,
+      { prices: 0 },
+      [{ path: 'website', select: 'name' }],
+      filter,
+    );
   }
 
   @Get('/:id')
