@@ -31,3 +31,4 @@ export class Product {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
+ProductSchema.index({ website: 1, websiteId: 1 });

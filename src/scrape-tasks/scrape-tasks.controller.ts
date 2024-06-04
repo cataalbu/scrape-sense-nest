@@ -4,10 +4,16 @@ import { CreateScrapeTaskDto } from './dtos/create-scrape-task.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ScrapeTaskDto, ScrapeTaskListDto } from './dtos/scrape-task.dto';
 import { ScrapeTaskType } from 'src/enums/scrape-task-types.enum';
+import { ScrapedProductsService } from 'src/scraped-products/scraped-products.service';
+import { ProductsService } from 'src/products/products.service';
 
 @Controller('scrape-tasks')
 export class ScrapeTasksController {
-  constructor(private scrapeTasksService: ScrapeTasksService) {}
+  constructor(
+    private scrapeTasksService: ScrapeTasksService,
+    private scrapedProductsService: ScrapedProductsService,
+    private productsService: ProductsService,
+  ) {}
 
   @Get()
   @Serialize(ScrapeTaskListDto)

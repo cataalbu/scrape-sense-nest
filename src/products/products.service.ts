@@ -6,6 +6,7 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { WebsitesService } from 'src/websites/websites.service';
 import { ScrapedProduct } from 'src/schemas/scraped-product.schema';
+import async from 'async';
 
 @Injectable()
 export class ProductsService {
@@ -62,8 +63,9 @@ export class ProductsService {
     const website = await this.websiteService.findOneByUrl(
       productInfo.websiteURL,
     );
+
     return this.productModel.findOneAndUpdate(
-      { websiteId: productInfo.websiteId, website: website.id },
+      { website: website.id, websiteId: productInfo.websiteId },
       {
         $set: {
           name: productInfo.name,
@@ -79,10 +81,9 @@ export class ProductsService {
   }
 
   async updateProductsWithScrapedProducts(products: ScrapedProduct[]) {
-    const promises = products.map(async (productInfo: ScrapedProduct) => {
-      return await this.updateOrCreateWithProductInfo(productInfo);
+    async.eachLimit(products, 15, async (productInfo) => {
+      return this.updateOrCreateWithProductInfo(productInfo);
     });
-    return Promise.all(promises);
   }
 
   updateOne({ id, ...productData }: UpdateProductDto) {

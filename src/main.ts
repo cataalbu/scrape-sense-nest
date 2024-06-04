@@ -6,7 +6,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: 'http://localhost:5173', // Specify the requesting origin
+    origin: [
+      'http://localhost:5173',
+      'https://scrape-sense-dashboard-react.vercel.app',
+      'https://scrape-sense.whitecatdev.com',
+    ], // Specify the requesting origin
     credentials: true, // Allow credentials (cookies, HTTP authentication)
   });
 
